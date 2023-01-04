@@ -12,8 +12,11 @@ import { darkTheme, lightTheme } from './theme';
 export default function App() {
   const isDark = useColorScheme() === 'dark';
   return (
-    <ThemeProvider theme={isDark ? lightTheme : darkTheme}>
-      <NavigationContainer theme={isDark ? DefaultTheme : DarkTheme}>
+    <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
+      {/* // <ThemeProvider theme={isDark ? lightTheme : darkTheme}> */}
+      <StatusBar />
+      <NavigationContainer theme={isDark ? DarkTheme : DefaultTheme}>
+        {/* <NavigationContainer theme={isDark ? DefaultTheme : DarkTheme}> */}
         <Root />
       </NavigationContainer>
     </ThemeProvider>
