@@ -23,9 +23,11 @@ export default function Detail({
 
   const API_KEY = 'f1bc60d26784ba93bb11e073f5915d4c';
   const BASE_URL = 'https://api.themoviedb.org/3/movie';
+  const LANG = ['en-US', 'ko-KR'];
+
   const getDetail = async () => {
     const response = await fetch(
-      `${BASE_URL}/${movieId}?api_key=${API_KEY}&language=en-US&append_to_response=videos`
+      `${BASE_URL}/${movieId}?api_key=${API_KEY}&language=${LANG[0]}&append_to_response=videos`
     ).then((res) => res.json());
 
     setData(response);

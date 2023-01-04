@@ -26,22 +26,20 @@ export default function Movies({ navigation: { navigate } }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const overview =
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
-
   const BASE_URL = 'https://api.themoviedb.org/3/movie';
   const API_KEY = 'f1bc60d26784ba93bb11e073f5915d4c';
+  const LANG = ['en-US', 'ko-KR'];
 
   const getNowPlaying = async () => {
     const { results } = await fetch(
-      `${BASE_URL}/now_playing?api_key=${API_KEY}&language=en-US&page=1`
+      `${BASE_URL}/now_playing?api_key=${API_KEY}&language=${LANG[0]}&page=1`
     ).then((res) => res.json());
     setNowPlayings(results);
     setIsLoading(false);
   };
   const getTopRated = async () => {
     const { results } = await fetch(
-      `${BASE_URL}/top_rated?api_key=${API_KEY}&language=en-US&page=1`
+      `${BASE_URL}/top_rated?api_key=${API_KEY}&language=${LANG[0]}&page=1`
     ).then((res) => res.json());
 
     setTopRateds(results);
@@ -49,7 +47,7 @@ export default function Movies({ navigation: { navigate } }) {
   };
   const getUpcoming = async () => {
     const { results } = await fetch(
-      `${BASE_URL}/upcoming?api_key=${API_KEY}&language=en-US&page=1`
+      `${BASE_URL}/upcoming?api_key=${API_KEY}&language=${LANG[0]}&page=1`
     ).then((res) => res.json());
     setUpcomings(results);
     setIsLoading(false);
