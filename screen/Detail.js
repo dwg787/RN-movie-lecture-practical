@@ -10,6 +10,8 @@ import styled from '@emotion/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { AntDesign } from '@expo/vector-icons';
 import { getImgPath, SCREEN_HEIGHT } from '../util/util';
+import { getDetail } from '../api';
+import { useQuery } from 'react-query';
 
 export default function Detail({
   navigation: { navigate },
@@ -17,31 +19,20 @@ export default function Detail({
     params: { movieId },
   },
 }) {
-  const [data, setData] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  // const [data, setData] = useState(null);
+  // const [isLoading, setIsLoading] = useState(true);
   const isDark = useColorScheme() === 'dark';
-
-  const API_KEY = 'f1bc60d26784ba93bb11e073f5915d4c';
-  const BASE_URL = 'https://api.themoviedb.org/3/movie';
-  const LANG = ['en-US', 'ko-KR'];
-
-  const getDetail = async () => {
-    const response = await fetch(
-      `${BASE_URL}/${movieId}?api_key=${API_KEY}&language=${LANG[0]}&append_to_response=videos`
-    ).then((res) => res.json());
-
-    setData(response);
-    setIsLoading(false);
-  };
 
   const openYoutube = async (key) => {
     const url = `https://www.youtube.com/watch?v=${key}`;
     await Linking.openURL(url);
   };
 
-  useEffect(() => {
-    getDetail();
-  }, []);
+  const { data, isLoading } = useQuery(['Detail', movieId], getDetail);
+
+  // useEffect(() => {
+  //   getDetail();
+  // }, []);
 
   if (isLoading) {
     return (

@@ -1,12 +1,9 @@
 import React from 'react';
 import { getImgPath, SCREEN_HEIGHT } from '../util/util';
-import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet, Text, View, Image } from 'react-native';
 
 export default function MovieSlide({ movie }) {
-  const { navigate } = useNavigation();
-
   return (
     <View style={styles.mainContainer}>
       <Image

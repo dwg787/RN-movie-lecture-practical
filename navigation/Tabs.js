@@ -24,7 +24,7 @@ export default function Tabs() {
     >
       <Tab.Screen
         options={{
-          title: 'Movies',
+          title: '영화',
           headerTitleAlign: 'center',
           tabBarLabel: 'Movies',
           tabBarIcon: ({ color, size }) => (
