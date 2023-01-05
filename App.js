@@ -17,10 +17,8 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
-        {/* // <ThemeProvider theme={isDark ? lightTheme : darkTheme}> */}
         <StatusBar />
         <NavigationContainer theme={isDark ? DarkTheme : DefaultTheme}>
-          {/* <NavigationContainer theme={isDark ? DefaultTheme : DarkTheme}> */}
           <Root />
         </NavigationContainer>
       </ThemeProvider>

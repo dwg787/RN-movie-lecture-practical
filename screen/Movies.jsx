@@ -99,7 +99,7 @@ export default function Movies({ navigation: { navigate } }) {
         <>
           <Swiper height='100%' showsPagination={false} autoplay loop>
             {nowPlayingData.results.map((movie) => (
-              <MovieSlide movie={movie} />
+              <MovieSlide movie={movie} key={movie.id} />
             ))}
           </Swiper>
           <Text style={styles.listTitle}>Top Rated Movies</Text>

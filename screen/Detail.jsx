@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import {
-  ActivityIndicator,
-  Linking,
-  StyleSheet,
-  useColorScheme,
-} from 'react-native';
+import { Linking, StyleSheet, useColorScheme, FlatList } from 'react-native';
 import styled from '@emotion/native';
-
 import { LinearGradient } from 'expo-linear-gradient';
 import { AntDesign } from '@expo/vector-icons';
 import { getImgPath, SCREEN_HEIGHT } from '../util/util';
 import { getDetail } from '../api';
 import { useQuery } from 'react-query';
+import Loader from '../components/Loader';
+
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
+import { authService, dbService } from '../firebase';
+
+import ReviewCard from '../components/ReviewCard';
+import ReviewModal from '../components/ReviewModal';
 
 export default function Detail({
   navigation: { navigate },
@@ -19,8 +20,9 @@ export default function Detail({
     params: { movieId },
   },
 }) {
-  // const [data, setData] = useState(null);
-  // const [isLoading, setIsLoading] = useState(true);
+  const [reviews, setReviews] = useState([]);
+  const [isOpenModal, setIsOpenModal] = useState(false);
+
   const isDark = useColorScheme() === 'dark';
 
   const openYoutube = async (key) => {
@@ -30,16 +32,32 @@ export default function Detail({
 
   const { data, isLoading } = useQuery(['Detail', movieId], getDetail);
 
-  // useEffect(() => {
-  //   getDetail();
-  // }, []);
+  const handleAdding = async () => {
+    const isLogin = !!authService.currentUser;
+    if (!isLogin) {
+      navigate('Login');
+      return;
+    }
+    setIsOpenModal(true);
+  };
+
+  useEffect(() => {
+    const q = query(
+      collection(dbService, 'reviews'),
+      orderBy('createdAt', 'desc')
+    );
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const newReviews = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setReviews(newReviews);
+    });
+    return unsubscribe;
+  }, []);
 
   if (isLoading) {
-    return (
-      <Loader>
-        <ActivityIndicator />
-      </Loader>
-    );
+    return <Loader />;
   }
 
   return (
@@ -69,17 +87,34 @@ export default function Detail({
         ))}
       </YoutubeList>
       <SectionTitle>Reviews</SectionTitle>
-      <AddReview onPress={() => {}}>
+      <AddReview onPress={handleAdding}>
         <TempText>Add Review</TempText>
       </AddReview>
+      <FlatList
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingHorizontal: 20,
+          marginBottom: 50,
+          justifyContent: 'flex-start',
+        }}
+        keyExtractor={(item) => item.id}
+        horizontal
+        data={reviews}
+        ItemSeparatorComponent={HSeprator}
+        renderItem={({ item }) => {
+          if (item.movieId === movieId) {
+            return <ReviewCard review={item} />;
+          }
+        }}
+      />
+      <ReviewModal
+        movieId={movieId}
+        isOpenModal={isOpenModal}
+        setIsOpenModal={setIsOpenModal}
+      />
     </Container>
   );
 }
-const Loader = styled.View`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-`;
 
 const Container = styled.ScrollView``;
 const View = styled.View`
