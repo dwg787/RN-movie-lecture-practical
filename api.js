@@ -9,9 +9,9 @@ export const getNowPlaying = () =>
   ).then((res) => res.json());
 // setNowPlayings(results);
 // setIsLoading(false);
-export const getTopRated = () =>
+export const getTopRated = ({ pageParam = 1 }) =>
   fetch(
-    `${BASE_URL}/top_rated?api_key=${API_KEY}&language=${LANG[0]}&page=1`
+    `${BASE_URL}/top_rated?api_key=${API_KEY}&language=${LANG[0]}&page=${pageParam}`
   ).then((res) => res.json());
 
 // setTopRateds(results);

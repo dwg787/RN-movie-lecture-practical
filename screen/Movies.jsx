@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 import { SCREEN_HEIGHT } from '../util/util';
+import Loader from '../components/Loader';
 import Swiper from 'react-native-swiper';
 import MovieSlide from '../components/MovieSlide';
 import TopRatedMovies from '../components/TopRatedMovies';
@@ -39,8 +40,16 @@ export default function Movies({ navigation: { navigate } }) {
   const {
     data: topRatedData,
     isLoading: isLoadingTR,
+    fetchNextPage: fetchNextTopRated,
+    hasNextPage: hasNextTopRatedPage,
     // refetch: refetchTR,
-  } = useQuery(['Movies', 'TopRated'], getTopRated);
+  } = useInfiniteQuery(['Movies', 'TopRated'], getTopRated, {
+    getNextPageParam: (lastPage) => {
+      if (lastPage.page < lastPage.total_pages) {
+        return lastPage.page + 1;
+      }
+    },
+  });
   const {
     data: upcomingData,
     isLoading: isLoadingUC,
@@ -83,12 +92,14 @@ export default function Movies({ navigation: { navigate } }) {
     }
   };
 
+  const loadMoreTopRated = async () => {
+    if (hasNextTopRatedPage) {
+      await fetchNextTopRated();
+    }
+  };
+
   if (isLoading) {
-    return (
-      <View style={styles.loader}>
-        <ActivityIndicator />
-      </View>
-    );
+    return <Loader />;
   }
 
   return (
@@ -107,7 +118,8 @@ export default function Movies({ navigation: { navigate } }) {
             horizontal
             contentContainerStyle={{ paddingHorizontal: 20 }}
             showsHorizontalScrollIndicator={false}
-            data={topRatedData.results}
+            onEndReached={loadMoreTopRated}
+            data={topRatedData.pages.map((page) => page.results).flat()}
             renderItem={({ item }) => <TopRatedMovies movie={item} />}
             keyExtractor={(item) => item.id}
             ItemSeparatorComponent={<View style={{ width: 10 }} />}
